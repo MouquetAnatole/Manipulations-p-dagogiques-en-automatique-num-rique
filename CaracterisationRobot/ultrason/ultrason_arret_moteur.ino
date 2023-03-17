@@ -34,7 +34,7 @@ void loop() {
   Serial.print(dist);
   Serial.println(" cm");
   
-  if(dist>10){
+  if(dist>20){
     forward(80);
     //delay(5000);
     //stopBool=true;
