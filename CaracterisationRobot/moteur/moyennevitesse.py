@@ -41,4 +41,4 @@ ax[0].set_xlabel("pwm")
 ax[1].scatter(toplotem[1],toplotem[0],32,toplotem[2])
 ax[1].set_xlabel("pwm")
 
-plt.show()
+plt.savefig("./CaracterisationRobot/moteur/autoplot")
