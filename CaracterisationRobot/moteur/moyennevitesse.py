@@ -1,4 +1,10 @@
+import os
 
+os.listdir
+
+mesdir="./mesure"
+
+listdir=os.listdir(mesdir)
 
 f=open("mesureMoteur_pwm80.txt","r")
 ff=f.readlines()
