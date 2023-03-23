@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import stats as st
 os.listdir
 
 mesdir="./CaracterisationRobot/moteur/mesure/"
@@ -34,11 +35,15 @@ for x in moyene:
     toplotem[1]=toplotem[1]+[x[2]]
     toplotem[2]=toplotem[2]+[(1,0,0)]
 
+a, b, r, p, err = st.linregress(toplotem[1],toplotem[0])
+def regress(x):
+    return a*np.array(x)+b
 
 fig,ax=plt.subplots(2,1)
 ax[0].scatter(toplote[1],toplote[0],8,toplote[2])
 ax[0].set_xlabel("pwm")
 ax[1].scatter(toplotem[1],toplotem[0],32,toplotem[2])
+ax[1].plot([75,145],regress([75,145]))
 ax[1].set_xlabel("pwm")
 
 plt.savefig("./CaracterisationRobot/moteur/autoplot")
