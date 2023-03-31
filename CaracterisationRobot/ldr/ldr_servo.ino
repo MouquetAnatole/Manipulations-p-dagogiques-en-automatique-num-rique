@@ -40,5 +40,7 @@ void loop() {
     myservo2.write(val2);
     Serial.println(val);
     delay(15);                           // attendre que le servo atteigne sa position
+
+    //check
 }
 
