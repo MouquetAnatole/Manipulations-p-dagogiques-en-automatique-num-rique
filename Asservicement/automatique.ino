@@ -8,7 +8,7 @@ const int brakeA  = 9;
 const int brakeB  = 8;
 const int pwmPinA  = 3;
 const int pwmPinB  = 11;
-const int dt = 500;         // en ms soit 0.5 s
+const int dt = 50;         // en ms soit 0.05 s
 const int robotSize = 11;   // en cm // ecart des roues
 
 //boolean to switch direction
@@ -62,8 +62,11 @@ void pilote_roue_gauche(int pwm){
 }
 
 void pilote_deux_roue(float vitesse, float omega){
-    pilote_roue_gauche(ceil(2*3.14*robotSize/dt)  + vitesse);
-    pilote_roue_droite(ceil(-2*3.14*robotSize/dt) + vitesse);
+    //omega en rad/s
+    omega = omega*2*robotSize;
+
+    pilote_roue_gauche(ceil(vitesse + omega));
+    pilote_roue_droite(ceil(vitesse - omega));
 }
 
 
@@ -72,4 +75,12 @@ void stopMooving(){
     digitalWrite(brakeB, HIGH);
     analogWrite(pwmPinA, 0);
     analogWrite(pwmPinB, 0);
+}
+
+
+integer vitesseToPWM(float vitesse){
+    a=0.4106617826617826;
+    b=-9.138363858363853;
+
+    return ceil((vitesse - b) / a);
 }

@@ -46,4 +46,4 @@ ax[1].scatter(toplotem[1],toplotem[0],32,toplotem[2])
 ax[1].plot([75,145],regress([75,145]))
 ax[1].set_xlabel("pwm")
 
-plt.savefig("./CaracterisationRobot/moteur/autoplot")
+plt.savefig(f'./CaracterisationRobot/moteur/autoplot_{a}_{b}.png')
