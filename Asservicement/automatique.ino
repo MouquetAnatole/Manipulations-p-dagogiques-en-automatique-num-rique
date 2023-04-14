@@ -81,6 +81,6 @@ void stopMooving(){
 integer vitesseToPWM(float vitesse){
     a=0.4106617826617826;
     b=-9.138363858363853;
-    return ceil( (abs(pwm)/pwm) * ((abs(vitesse) - b) / a));
+    return ceil( (abs(pwm)/pwm) * min(((abs(vitesse) - b) / a),255));
 }
 
