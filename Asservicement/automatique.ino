@@ -17,6 +17,11 @@ bool directionState = true;
 //boolean to stop
 bool stopBool = false;
 
+// variable a initializé avant loop.
+float omegaConsigne;
+float vitesseConsigne;
+float angle = 0;
+float vitesse = 0;
 
 void setup() {
   //Init Motor Shield
@@ -30,6 +35,14 @@ void setup() {
 
 void loop() {
     delay(dt);
+
+    vitesseConsigne = ;
+    omegaConsigne = ;
+
+    float omega = asservicementOmega(angle , omegaConsigne);
+    vitesse = asservicementVitesse(vitesse , vitesseConsigne);
+
+    pilote_deux_roue(vitesse , omega);
 }
 
 
@@ -84,3 +97,10 @@ integer vitesseToPWM(float vitesse){
     return ceil( (abs(pwm)/pwm) * min(((abs(vitesse) - b) / a),255));
 }
 
+float asservicementOmega(float omega , float consigne){
+    return NULL;
+}
+
+float asservicementVitesse(float vitesse , float consigne){
+    return NULL;
+}
