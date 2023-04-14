@@ -65,8 +65,8 @@ void pilote_deux_roue(float vitesse, float omega){
     //omega en rad/s
     omega = omega*2*robotSize;
 
-    pilote_roue_gauche(ceil(vitesse + omega));
-    pilote_roue_droite(ceil(vitesse - omega));
+    pilote_roue_gauche(vitesseToPWM(vitesse + omega));
+    pilote_roue_droite(vitesseToPWM(vitesse - omega));
 }
 
 
@@ -81,6 +81,6 @@ void stopMooving(){
 integer vitesseToPWM(float vitesse){
     a=0.4106617826617826;
     b=-9.138363858363853;
-
-    return ceil((vitesse - b) / a);
+    return ceil( (abs(pwm)/pwm) * ((abs(vitesse) - b) / a));
 }
+
