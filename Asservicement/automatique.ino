@@ -1,5 +1,7 @@
 #include <cstdlib>
 #include <cmath>
+#include "Ultrasonic.h"
+Ultrasonic ultrasonic(6, 5); // Trig et Echo
 
 //Parameters
 const int directionA  = 12; //droite
@@ -19,16 +21,22 @@ bool stopBool = false;
 
 // variable a initializé avant loop.
 float omegaErreur;
+float omegaErreurAccu = 0;
 float distanceErreur;
 float angle = 0;
 float vitesse = 0;
+float distanceCommande = 10;
 
 void setup() {
-  //Init Motor Shield
-  pinMode(directionA, OUTPUT); //Initiates Motor Channel A pin
-  pinMode(brakeA, OUTPUT); //Initiates Brake Channel A pin
-  pinMode(directionB, OUTPUT); //Initiates Motor Channel B pin
-  pinMode(brakeB, OUTPUT); //Initiates Brake Channel B pin
+    //Init Motor Shield
+    pinMode(directionA, OUTPUT); //Initiates Motor Channel A pin
+    pinMode(brakeA, OUTPUT); //Initiates Brake Channel A pin
+    pinMode(directionB, OUTPUT); //Initiates Motor Channel B pin
+    pinMode(brakeB, OUTPUT); //Initiates Brake Channel B pin
+
+    //Init ultrason port
+    pinMode(5, OUTPUT);
+    pinMode(6, OUTPUT);
 }
 
 
@@ -36,8 +44,8 @@ void setup() {
 void loop() {
     delay(dt);
 
-    distancErreur = ;
-    omegaErreur = ;
+    distancErreur = distanceCommande - ultrasonic.Ranging(CM);
+    omegaErreur = analogRead(A0) ;
 
     float omega = asservicementOmega(angle , omegaErreur);
     vitesse = asservicementVitesse(vitesse , distanceErreur);

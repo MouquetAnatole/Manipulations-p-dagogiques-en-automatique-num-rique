@@ -24,8 +24,8 @@ void setup() {
   pinMode(brakeB, OUTPUT); //Initiates Brake Channel B pin
 
   //Init ultrason port
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
 
   
 }
