@@ -18,8 +18,8 @@ bool directionState = true;
 bool stopBool = false;
 
 // variable a initializé avant loop.
-float omegaConsigne;
-float vitesseConsigne;
+float omegaErreur;
+float distanceErreur;
 float angle = 0;
 float vitesse = 0;
 
@@ -36,11 +36,11 @@ void setup() {
 void loop() {
     delay(dt);
 
-    vitesseConsigne = ;
-    omegaConsigne = ;
+    distancErreur = ;
+    omegaErreur = ;
 
-    float omega = asservicementOmega(angle , omegaConsigne);
-    vitesse = asservicementVitesse(vitesse , vitesseConsigne);
+    float omega = asservicementOmega(angle , omegaErreur);
+    vitesse = asservicementVitesse(vitesse , distanceErreur);
 
     pilote_deux_roue(vitesse , omega);
 }
