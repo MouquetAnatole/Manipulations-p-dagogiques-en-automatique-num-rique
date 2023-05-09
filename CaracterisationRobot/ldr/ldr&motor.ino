@@ -1,66 +1,113 @@
-//Suit la lumière mais tourne sur place
-//Parameters
-const int directionA  = 12;
-const int directionB  = 13;
-const int brakeA  = 9;
-const int brakeB  = 8;
-const int pwmPinA  = 3;
-const int pwmPinB  = 11;
+#include "Ultrasonic.h"
+Ultrasonic ultrasonic(6, 5); // Trig et Echo
 
-void setup() {
-    //myservo1.attach(9);//Branchement du servo1 à la broche 9
-    //myservo2.attach(10); // Branchement du servo2 à la broche 10
-    Serial.begin(9600);
+// Parameters
+const int directionA = 12; // droite
+const int directionB = 13; // gauche
+const int brakeA = 9;
+const int brakeB = 8;
+const int pwmPinA = 3;
+const int pwmPinB = 11;
+const int dt = 50;        // en ms soit 0.05 s
+const int robotSize = 11; // en cm // ecart des roues
 
-    //Init Motor Shield
-    pinMode(directionA, OUTPUT); //Initiates Motor Channel A pin
-    pinMode(brakeA, OUTPUT); //Initiates Brake Channel A pin
-    pinMode(directionB, OUTPUT); //Initiates Motor Channel B pin
-    pinMode(brakeB, OUTPUT); //Initiates Brake Channel B pin
+// boolean to switch direction
+bool directionState = true;
+
+// boolean to stop
+bool stopBool = false;
+
+// variable a initializé avant loop.
+float omegaErreur;
+float omegaErreurAccu = 0;
+float distanceErreur;
+float vitesse = 0;
+float distanceCommande = 10;
+float kvitesse = 2;
+
+void setup()
+{
+    // Init Motor Shield
+    pinMode(directionA, OUTPUT); // Initiates Motor Channel A pin
+    pinMode(brakeA, OUTPUT);     // Initiates Brake Channel A pin
+    pinMode(directionB, OUTPUT); // Initiates Motor Channel B pin
+    pinMode(brakeB, OUTPUT);     // Initiates Brake Channel B pin
+
+    // Init ultrason port
+    pinMode(5, OUTPUT);
+    pinMode(6, OUTPUT);
 }
 
-void loop() {
-    int pwm=80;
-    int val = analogRead(A0);  // lit la valeur de la tension en pont diviseur (entre 0 et 1023)
-    //val = map(val, 0, 600, 0, 180);  // le convertir en consigne pour le servo (entre 0 and 180)
-    
-    if(val<30){
-      turn_right(pwm);
-    }
-    else if(val>100){
-      turn_left(pwm);
-    }
-    else{
-      stopMooving();
-    }
-    
-    Serial.println(val);
-    
-    delay(150);  // attendre
+void loop()
+{
+    delay(dt);
+
+    float distancErreur = distanceCommande - ultrasonic.Ranging(CM);
+    omegaErreur = ( analogRead(A0) - 512.0 )/1024*2*3.14; // lit la valeur de la tension en pont diviseur (entre 0 et 1023) puis converti en rad
+
+    float omega = asservicementOmega(omegaErreur);
+    //vitesse = asservicementVitesse(distanceErreur);
+    vitesse=0;
+
+    pilote_deux_roue(vitesse, omega);
 }
 
+void pilote_roue_droite(int pwm)
+{
 
-void turn_left(int pwm){
-  digitalWrite(directionA, LOW);
-  digitalWrite(directionB, LOW);
-  digitalWrite(brakeA, LOW);
-  digitalWrite(brakeB, LOW);
-  analogWrite(pwmPinA, pwm);
-  analogWrite(pwmPinB, pwm);
+    digitalWrite(directionA, (1 + abs(pwm) / pwm) / 2);
+
+    // release breaks
+    digitalWrite(brakeA, LOW);
+
+    // set work duty for the motor
+    analogWrite(pwmPinA, abs(pwm));
 }
 
-void turn_right(int pwm){
-  digitalWrite(directionB, HIGH);
-  digitalWrite(directionA, HIGH);
-  digitalWrite(brakeA, LOW);
-  digitalWrite(brakeB, LOW);
-  analogWrite(pwmPinB, pwm);
-  analogWrite(pwmPinA, pwm);
+void pilote_roue_gauche(int pwm)
+{
+
+    digitalWrite(directionB, 1 - (1 + abs(pwm) / pwm) / 2);
+
+    // release breaks
+    digitalWrite(brakeB, LOW);
+
+    // set work duty for the motor
+    analogWrite(pwmPinB, abs(pwm));
 }
 
-void stopMooving(){
-  digitalWrite(brakeA, HIGH);
-  digitalWrite(brakeB, HIGH);
-  analogWrite(pwmPinA, 0);
-  analogWrite(pwmPinB, 0);
+void pilote_deux_roue(float vitesse, float omega)
+{
+    // omega en rad/s
+    omega = omega * 2 * robotSize;
+
+    pilote_roue_gauche(vitesseToPWM(vitesse + omega));
+    pilote_roue_droite(vitesseToPWM(vitesse - omega));
+}
+
+void stopMooving()
+{
+    digitalWrite(brakeA, HIGH);
+    digitalWrite(brakeB, HIGH);
+    analogWrite(pwmPinA, 0);
+    analogWrite(pwmPinB, 0);
+}
+
+int vitesseToPWM(float vitesse)
+{
+    float a = 0.4106617826617826;
+    float b = -9.138363858363853;
+    return ceil((abs(vitesse) / vitesse) * min(((abs(vitesse) - b) / a), 120));
+}
+
+float asservicementOmega(float erreur)
+{
+    omegaErreurAccu += erreur *0.01 ; // integral control
+
+    return omegaErreurAccu;
+}
+
+float asservicementVitesse(float erreur)
+{
+    return + erreur * kvitesse ;
 }
