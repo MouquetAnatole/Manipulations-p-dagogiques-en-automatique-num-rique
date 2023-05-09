@@ -25,6 +25,7 @@ float omegaErreurAccu = 0;
 float distanceErreur;
 float vitesse = 0;
 float distanceCommande = 10;
+float kvitesse = 2;
 
 void setup()
 {
@@ -109,5 +110,5 @@ float asservicementOmega(float erreur)
 
 float asservicementVitesse(float erreur)
 {
-    return - erreur * ;
+    return - erreur * Kvitesse ;
 }
