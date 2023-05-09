@@ -100,14 +100,14 @@ integer vitesseToPWM(float vitesse)
     return ceil((abs(pwm) / pwm) * min(((abs(vitesse) - b) / a), 255));
 }
 
-float asservicementOmega(float omega, float consigne)
+float asservicementOmega(float erreur)
 {
-    omegaErreurAccu += omegaErreur; // integral control
+    omegaErreurAccu += erreur * dt ; // integral control
 
-    return ;
+    return omegaErreurAccu;
 }
 
-float asservicementVitesse(float vitesse, float consigne)
+float asservicementVitesse(float erreur)
 {
-    return NULL;
+    return - erreur * ;
 }
