@@ -1,5 +1,3 @@
-#include <cstdlib>
-#include <cmath>
 #include "Ultrasonic.h"
 Ultrasonic ultrasonic(6, 5); // Trig et Echo
 
@@ -44,11 +42,12 @@ void loop()
 {
     delay(dt);
 
-    distancErreur = distanceCommande - ultrasonic.Ranging(CM);
+    float distancErreur = distanceCommande - ultrasonic.Ranging(CM);
     omegaErreur = ( analogRead(A0) - 512.0 )/1024*2*3.14; // lit la valeur de la tension en pont diviseur (entre 0 et 1023) puis converti en rad
 
     float omega = asservicementOmega(omegaErreur);
-    vitesse = asservicementVitesse(distanceErreur);
+    //vitesse = asservicementVitesse(distanceErreur);
+    vitesse=0;
 
     pilote_deux_roue(vitesse, omega);
 }
@@ -68,7 +67,7 @@ void pilote_roue_droite(int pwm)
 void pilote_roue_gauche(int pwm)
 {
 
-    digitalWrite(directionB, (1 + abs(pwm) / pwm) / 2);
+    digitalWrite(directionB, 1 - (1 + abs(pwm) / pwm) / 2);
 
     // release breaks
     digitalWrite(brakeB, LOW);
@@ -94,21 +93,21 @@ void stopMooving()
     analogWrite(pwmPinB, 0);
 }
 
-integer vitesseToPWM(float vitesse)
+int vitesseToPWM(float vitesse)
 {
-    a = 0.4106617826617826;
-    b = -9.138363858363853;
-    return ceil((abs(pwm) / pwm) * min(((abs(vitesse) - b) / a), 255));
+    float a = 0.4106617826617826;
+    float b = -9.138363858363853;
+    return ceil((abs(vitesse) / vitesse) * min(((abs(vitesse) - b) / a), 120));
 }
 
 float asservicementOmega(float erreur)
 {
-    omegaErreurAccu += erreur * dt ; // integral control
+    omegaErreurAccu += erreur *0.01 ; // integral control
 
     return omegaErreurAccu;
 }
 
 float asservicementVitesse(float erreur)
 {
-    return - erreur * Kvitesse ;
+    return + erreur * kvitesse ;
 }
