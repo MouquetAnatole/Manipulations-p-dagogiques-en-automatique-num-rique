@@ -95,9 +95,9 @@ void stopMooving()
 
 int vitesseToPWM(float vitesse)
 {
-    a = 0.4106617826617826;
-    b = -9.138363858363853;
-    return ceil((abs(pwm) / pwm) * min(((abs(vitesse) - b) / a), 120));
+    float a = 0.4106617826617826;
+    float b = -9.138363858363853;
+    return ceil((abs(vitesse) / vitesse) * min(((abs(vitesse) - b) / a), 120));
 }
 
 float asservicementOmega(float erreur)
